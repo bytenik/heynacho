@@ -19,24 +19,13 @@ data:
 
 ---
 # Secret for sensitive credentials
-# Note: Create this manually or use a secret management solution
+# Note: Create this manually with kubectl:
 # kubectl create secret generic nachobot-secrets \
 #   --from-literal=SLACK_BOT_TOKEN=xoxb-your-token \
 #   --from-literal=SLACK_APP_TOKEN=xapp-your-token \
 #   --from-literal=SLACK_SIGNING_SECRET=your-secret \
-#   --from-literal=MONGODB_URI=mongodb://your-mongodb-host:27017/nachobot \
+#   --from-literal=MONGODB_URI=mongodb+srv://user:pass@host/database \
 #   -n nachobot
-apiVersion: v1
-kind: Secret
-metadata:
-  name: nachobot-secrets
-  namespace: nachobot
-type: Opaque
-stringData:
-  SLACK_BOT_TOKEN: "xoxb-your-bot-token-here"
-  SLACK_APP_TOKEN: "xapp-your-app-token-here"
-  SLACK_SIGNING_SECRET: "your-signing-secret-here"
-  MONGODB_URI: "mongodb://your-mongodb-host:27017/nachobot"
 
 ---
 # NachoBot Deployment
@@ -59,9 +48,6 @@ spec:
         - name: nachobot
           image: ghcr.io/bytenik/heynacho:latest
           imagePullPolicy: Always
-          ports:
-            - containerPort: 3000
-              name: http
           env:
             - name: SLACK_BOT_TOKEN
               valueFrom:
@@ -105,29 +91,3 @@ spec:
             limits:
               memory: "256Mi"
               cpu: "200m"
-          livenessProbe:
-            tcpSocket:
-              port: 3000
-            initialDelaySeconds: 30
-            periodSeconds: 10
-          readinessProbe:
-            tcpSocket:
-              port: 3000
-            initialDelaySeconds: 5
-            periodSeconds: 10
-
----
-# Optional: Service for NachoBot (mainly for debugging/health checks)
-apiVersion: v1
-kind: Service
-metadata:
-  name: nachobot
-  namespace: nachobot
-spec:
-  selector:
-    app: nachobot
-  ports:
-    - port: 3000
-      targetPort: 3000
-      name: http
-  type: ClusterIP
