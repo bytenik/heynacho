@@ -18,8 +18,7 @@ export const config: Config = {
     signingSecret: getEnvVar('SLACK_SIGNING_SECRET'),
   },
   mongodb: {
-    uri: getEnvVar('MONGODB_URI', 'mongodb://localhost:27017'),
-    dbName: getEnvVar('MONGODB_DB_NAME', 'nachobot'),
+    uri: getEnvVar('MONGODB_URI', 'mongodb://localhost:27017/nachobot'),
   },
   app: {
     port: parseInt(getEnvVar('PORT', '3000'), 10),

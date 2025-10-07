@@ -252,16 +252,15 @@ nachobot/
 
 ### Environment Variables
 
-| Variable               | Description                     | Default                     |
-| ---------------------- | ------------------------------- | --------------------------- |
-| `SLACK_BOT_TOKEN`      | Bot User OAuth Token            | Required                    |
-| `SLACK_APP_TOKEN`      | App-level token for Socket Mode | Required                    |
-| `SLACK_SIGNING_SECRET` | App signing secret              | Required                    |
-| `MONGODB_URI`          | MongoDB connection string       | `mongodb://localhost:27017` |
-| `MONGODB_DB_NAME`      | Database name                   | `nachobot`                  |
-| `PORT`                 | Application port                | `3000`                      |
-| `DAILY_NACHO_LIMIT`    | Daily nacho limit per user      | `5`                         |
-| `TZ`                   | Timezone for daily reset        | `UTC`                       |
+| Variable               | Description                                              | Default                              |
+| ---------------------- | -------------------------------------------------------- | ------------------------------------ |
+| `SLACK_BOT_TOKEN`      | Bot User OAuth Token                                     | Required                             |
+| `SLACK_APP_TOKEN`      | App-level token for Socket Mode                          | Required                             |
+| `SLACK_SIGNING_SECRET` | App signing secret                                       | Required                             |
+| `MONGODB_URI`          | MongoDB connection string (include database name in URI) | `mongodb://localhost:27017/nachobot` |
+| `PORT`                 | Application port                                         | `3000`                               |
+| `DAILY_NACHO_LIMIT`    | Daily nacho limit per user                               | `5`                                  |
+| `TZ`                   | Timezone for daily reset                                 | `UTC`                                |
 
 ## Database Schema
 

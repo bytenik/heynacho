@@ -6,7 +6,6 @@ export interface Config {
   };
   mongodb: {
     uri: string;
-    dbName: string;
   };
   app: {
     port: number;

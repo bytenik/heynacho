@@ -8,9 +8,9 @@ export const connectToDatabase = async (): Promise<Db> => {
   try {
     client = new MongoClient(config.mongodb.uri);
     await client.connect();
-    db = client.db(config.mongodb.dbName);
+    db = client.db();
 
-    console.log(`✅ Connected to MongoDB: ${config.mongodb.dbName}`);
+    console.log(`✅ Connected to MongoDB: ${db.databaseName}`);
 
     // Create indexes
     await createIndexes();

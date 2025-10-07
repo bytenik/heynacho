@@ -28,13 +28,10 @@ services:
       mongodb:
         condition: service_healthy
     environment:
-      - MONGODB_URI=mongodb://mongodb:27017
-      - MONGODB_DB_NAME=nachobot
-      - PORT=4000
+      - MONGODB_URI=mongodb://mongodb:27017/nachobot
+      - PORT=3000
       - TZ=UTC
       - DAILY_NACHO_LIMIT=5
-    ports:
-      - "4000:4000"
     env_file:
       - .env
     networks:
