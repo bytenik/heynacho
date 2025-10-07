@@ -1,0 +1,133 @@
+---
+# Namespace
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nachobot
+
+---
+# ConfigMap for non-sensitive configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nachobot-config
+  namespace: nachobot
+data:
+  PORT: "3000"
+  DAILY_NACHO_LIMIT: "5"
+  TZ: "America/New_York"
+
+---
+# Secret for sensitive credentials
+# Note: Create this manually or use a secret management solution
+# kubectl create secret generic nachobot-secrets \
+#   --from-literal=SLACK_BOT_TOKEN=xoxb-your-token \
+#   --from-literal=SLACK_APP_TOKEN=xapp-your-token \
+#   --from-literal=SLACK_SIGNING_SECRET=your-secret \
+#   --from-literal=MONGODB_URI=mongodb://your-mongodb-host:27017/nachobot \
+#   -n nachobot
+apiVersion: v1
+kind: Secret
+metadata:
+  name: nachobot-secrets
+  namespace: nachobot
+type: Opaque
+stringData:
+  SLACK_BOT_TOKEN: "xoxb-your-bot-token-here"
+  SLACK_APP_TOKEN: "xapp-your-app-token-here"
+  SLACK_SIGNING_SECRET: "your-signing-secret-here"
+  MONGODB_URI: "mongodb://your-mongodb-host:27017/nachobot"
+
+---
+# NachoBot Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nachobot
+  namespace: nachobot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nachobot
+  template:
+    metadata:
+      labels:
+        app: nachobot
+    spec:
+      containers:
+        - name: nachobot
+          image: nachobot:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+              name: http
+          env:
+            - name: SLACK_BOT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: nachobot-secrets
+                  key: SLACK_BOT_TOKEN
+            - name: SLACK_APP_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: nachobot-secrets
+                  key: SLACK_APP_TOKEN
+            - name: SLACK_SIGNING_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: nachobot-secrets
+                  key: SLACK_SIGNING_SECRET
+            - name: MONGODB_URI
+              valueFrom:
+                secretKeyRef:
+                  name: nachobot-secrets
+                  key: MONGODB_URI
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: nachobot-config
+                  key: PORT
+            - name: DAILY_NACHO_LIMIT
+              valueFrom:
+                configMapKeyRef:
+                  name: nachobot-config
+                  key: DAILY_NACHO_LIMIT
+            - name: TZ
+              valueFrom:
+                configMapKeyRef:
+                  name: nachobot-config
+                  key: TZ
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+          livenessProbe:
+            tcpSocket:
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            tcpSocket:
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+
+---
+# Optional: Service for NachoBot (mainly for debugging/health checks)
+apiVersion: v1
+kind: Service
+metadata:
+  name: nachobot
+  namespace: nachobot
+spec:
+  selector:
+    app: nachobot
+  ports:
+    - port: 3000
+      targetPort: 3000
+      name: http
+  type: ClusterIP

@@ -197,6 +197,79 @@ A Slack bot for team recognition using nachos! Inspired by another popular Slack
    docker-compose down
    ```
 
+### Kubernetes Deployment
+
+**Prerequisites**: You'll need an external MongoDB instance (MongoDB Atlas, AWS DocumentDB, or your own MongoDB deployment).
+
+1. **Build and push Docker image**:
+
+   ```bash
+   # Build the image
+   docker build -t your-registry/nachobot:latest .
+
+   # Push to your container registry
+   docker push your-registry/nachobot:latest
+   ```
+
+2. **Update the image in k8s-deployment.yml**:
+
+   Edit `k8s-deployment.yml` and change:
+   ```yaml
+   image: nachobot:latest
+   ```
+   to:
+   ```yaml
+   image: your-registry/nachobot:latest
+   ```
+
+3. **Create secrets with your credentials**:
+
+   ```bash
+   kubectl create secret generic nachobot-secrets \
+     --from-literal=SLACK_BOT_TOKEN=xoxb-your-token \
+     --from-literal=SLACK_APP_TOKEN=xapp-your-token \
+     --from-literal=SLACK_SIGNING_SECRET=your-secret \
+     --from-literal=MONGODB_URI=mongodb://your-mongodb-host:27017/nachobot \
+     -n nachobot
+   ```
+
+   For MongoDB Atlas, use a connection string like:
+   ```bash
+   --from-literal=MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/nachobot
+   ```
+
+4. **Deploy to Kubernetes**:
+
+   ```bash
+   kubectl apply -f k8s-deployment.yml
+   ```
+
+5. **Verify deployment**:
+
+   ```bash
+   # Check pods
+   kubectl get pods -n nachobot
+
+   # View logs
+   kubectl logs -f deployment/nachobot -n nachobot
+   ```
+
+6. **Update configuration** (if needed):
+
+   ```bash
+   # Edit ConfigMap
+   kubectl edit configmap nachobot-config -n nachobot
+
+   # Restart deployment to pick up changes
+   kubectl rollout restart deployment/nachobot -n nachobot
+   ```
+
+7. **Clean up**:
+
+   ```bash
+   kubectl delete -f k8s-deployment.yml
+   ```
+
 ## Usage
 
 ### Giving Nachos
