@@ -30,7 +30,7 @@ services:
     environment:
       - MONGODB_URI=mongodb://mongodb:27017/nachobot
       - PORT=3000
-      - TZ=UTC
+      - TZ=America/New_York
       - DAILY_NACHO_LIMIT=5
     env_file:
       - .env

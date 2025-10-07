@@ -23,6 +23,6 @@ export const config: Config = {
   app: {
     port: parseInt(getEnvVar('PORT', '3000'), 10),
     dailyNachoLimit: parseInt(getEnvVar('DAILY_NACHO_LIMIT', '5'), 10),
-    timezone: getEnvVar('TZ', 'UTC'),
+    timezone: getEnvVar('TZ', 'America/New_York'),
   },
 };

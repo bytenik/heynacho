@@ -260,7 +260,7 @@ nachobot/
 | `MONGODB_URI`          | MongoDB connection string (include database name in URI) | `mongodb://localhost:27017/nachobot` |
 | `PORT`                 | Application port                                         | `3000`                               |
 | `DAILY_NACHO_LIMIT`    | Daily nacho limit per user                               | `5`                                  |
-| `TZ`                   | Timezone for daily reset                                 | `UTC`                                |
+| `TZ`                   | Timezone for daily reset                                 | `America/New_York`                   |
 
 ## Database Schema
 
