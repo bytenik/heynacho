@@ -57,8 +57,8 @@ spec:
     spec:
       containers:
         - name: nachobot
-          image: nachobot:latest
-          imagePullPolicy: IfNotPresent
+          image: ghcr.io/bytenik/heynacho:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 3000
               name: http
