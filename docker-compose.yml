@@ -1,0 +1,53 @@
+services:
+  mongodb:
+    image: mongo:8.0
+    container_name: nachobot-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_DATABASE: nachobot
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - mongodb_config:/data/configdb
+    networks:
+      - nachobot-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/nachobot --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  nachobot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nachobot-app
+    restart: unless-stopped
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    environment:
+      - MONGODB_URI=mongodb://mongodb:27017
+      - MONGODB_DB_NAME=nachobot
+      - PORT=4000
+      - TZ=UTC
+      - DAILY_NACHO_LIMIT=5
+    ports:
+      - "4000:4000"
+    env_file:
+      - .env
+    networks:
+      - nachobot-network
+    volumes:
+      - ./logs:/app/logs
+
+networks:
+  nachobot-network:
+    driver: bridge
+
+volumes:
+  mongodb_data:
+    driver: local
+  mongodb_config:
+    driver: local

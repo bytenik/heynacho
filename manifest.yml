@@ -1,0 +1,60 @@
+display_information:
+  name: HeyNacho
+  description: "A team recognition bot using nachos! Show appreciation by giving :nacho: to your teammates."
+  background_color: "#FFA500"
+  long_description: "HeyNacho is a Slack bot for team recognition inspired by another popular Slack app. Team members can show appreciation by giving :nacho: to each other. Each person gets a certain number of nachos to give per day. Track your balance, view leaderboards, and celebrate your team's wins together!"
+
+features:
+  app_home:
+    home_tab_enabled: false
+    messages_tab_enabled: true
+    messages_tab_read_only_enabled: false
+  bot_user:
+    display_name: HeyNacho
+    always_online: true
+  slash_commands:
+    - command: /nachos-balance
+      description: Check your nacho balance and remaining nachos for today
+      should_escape: false
+    - command: /nachos-leaderboard
+      description: View top nacho receivers and givers
+      should_escape: false
+    - command: /nachos-stats
+      description: View your personal statistics and recent activity
+      should_escape: false
+    - command: /nachos-help
+      description: Show help message with usage instructions
+      should_escape: false
+    - command: /nachos-admin
+      description: View admin dashboard with overall statistics
+      should_escape: false
+
+oauth_config:
+  scopes:
+    bot:
+      - app_mentions:read
+      - channels:history
+      - channels:read
+      - chat:write
+      - commands
+      - groups:history
+      - groups:read
+      - im:history
+      - im:read
+      - mpim:history
+      - mpim:read
+      - users:read
+
+settings:
+  event_subscriptions:
+    bot_events:
+      - app_mention
+      - message.channels
+      - message.groups
+      - message.im
+      - message.mpim
+  interactivity:
+    is_enabled: false
+  org_deploy_enabled: false
+  socket_mode_enabled: true
+  token_rotation_enabled: false
